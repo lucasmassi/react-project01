@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssuesList } from './styles';
+import { Loading, Owner, IssuesList, FilterIssues } from './styles';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -19,17 +19,19 @@ export default class Repository extends Component {
     repository: {},
     issues: [],
     loading: true,
+    filter: 'all'
   }
 
   async componentDidMount() {
     const { match } = this.props;
     const repoName = decodeURIComponent(match.params.repository);
+    const { filter } = this.state;
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
+          state: filter,
           per_page: 5,
         }
       })
@@ -41,6 +43,37 @@ export default class Repository extends Component {
       loading: false,
     })
   }
+
+  async componentDidUpdate(_, prevState) {
+
+    if (prevState.filter !== this.state.filter) {
+      const { match } = this.props;
+      const repoName = decodeURIComponent(match.params.repository);
+      const { filter } = this.state;
+
+      const [repository, issues] = await Promise.all([
+        api.get(`/repos/${repoName}`),
+        api.get(`/repos/${repoName}/issues`, {
+          params: {
+            state: filter,
+            per_page: 5,
+          }
+        })
+      ]);
+
+      this.setState({
+        repository: repository.data,
+        issues: issues.data,
+        loading: false,
+      })
+    }
+  }
+
+  handleSelectChange = e => {
+    this.setState({
+      filter: e.target.value,
+    })
+  };
 
   render() {
     const { repository, issues, loading } = this.state;
@@ -57,7 +90,11 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
-
+        <FilterIssues onChange={this.handleSelectChange}>
+          <option value="all">Todos</option>
+          <option value="open">Abertadas</option>
+          <option value="closed">Fechados</option>
+        </FilterIssues>
         <IssuesList>
           {issues.map(issue => (
             <li key={String(issue.id)}>

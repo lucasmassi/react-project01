@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List, ErrorMessage } from './styles';
+import { Form, SubmitButton, List, ErrorMessage, FilterIssues } from './styles';
 
 export default class Main extends Component {
 
@@ -34,7 +34,11 @@ export default class Main extends Component {
   }
 
   handleInputChange = e => {
-    this.setState({ newRepo: e.target.value });
+    this.setState({
+      newRepo: e.target.value,
+      error: null,
+      messageError: null
+    });
   };
 
   handleSubmit = async e => {
@@ -78,7 +82,10 @@ export default class Main extends Component {
 
 
   render() {
-    const { newRepo, loading, repositories, error, messageError } = this.state;
+    const {
+      newRepo, loading,
+      repositories, error,
+      messageError } = this.state;
 
     return (
       <Container>
