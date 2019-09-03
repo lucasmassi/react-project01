@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaSpinner, FaTimesCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, ErrorMessage } from './styles';
 
 export default class Main extends Component {
 
   state = {
     newRepo: '',
     repositories: [],
-    loading: 0
+    loading: 0,
+    error: null,
+    messageError: null
   };
 
   componentDidMount() {
@@ -40,24 +42,43 @@ export default class Main extends Component {
 
     this.setState({ loading: 1 });
 
-    const { newRepo, repositories } = this.state;
+    try {
+      const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`);
+      if (newRepo === '' || newRepo === 0) {
+        throw 'Insira um nome de repositório';
+      }
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const repoExists = repositories.find(repository => repository.name === newRepo);
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: 0,
-    });
+      if (repoExists) {
+        throw 'Repositório duplicado';
+      }
+
+      const response = await api.get(`/repos/${newRepo}`);
+
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+      });
+
+    } catch (error) {
+      this.setState({
+        error: 1,
+        messageError: error
+      });
+    } finally {
+      this.setState({ loading: 0 })
+    }
   };
 
 
   render() {
-    const { newRepo, loading, repositories } = this.state;
+    const { newRepo, loading, repositories, error, messageError } = this.state;
 
     return (
       <Container>
@@ -66,7 +87,7 @@ export default class Main extends Component {
           Repositórios
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} error={error}>
           <input
             type="text"
             placeholder="Adicionar Repositório"
@@ -81,6 +102,9 @@ export default class Main extends Component {
               )}
           </SubmitButton>
         </Form>
+        <ErrorMessage error={error}>
+          {error ? messageError : ''}
+        </ErrorMessage>
         <List>
           {repositories.map(repository => (
             <li key={repository.name}>

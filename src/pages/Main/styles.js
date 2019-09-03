@@ -20,7 +20,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Form = styled.form`
+export const Form = styled.form.attrs(props => props.error)`
   margin-top: 30px;
   display: flex;
   flex-direction: row;
@@ -32,6 +32,14 @@ export const Form = styled.form`
     border-radius: 4px;
     font-size: 16px;
   }
+
+  ${props =>
+    props.error &&
+    css`
+      input {
+        border-color: #ff5447;
+      }
+    `}
 `;
 
 const rotate = keyframes`
@@ -92,4 +100,21 @@ export const List = styled.ul`
       text-decoration: none;
     }
   }
+`;
+
+export const ErrorMessage = styled.p`
+  ${props =>
+    props.error ?
+      css`
+      display: flex;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      color: #ff5447;
+      font-size: 15px;
+      font-weight: bold;
+      flex-direction: row;
+    ` :
+      css`
+      display:none
+    ` }
 `;
