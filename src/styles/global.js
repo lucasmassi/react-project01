@@ -8,7 +8,7 @@ export default createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html, body. #root {
+  html, body {
     min-height: 100%;
   }
 
