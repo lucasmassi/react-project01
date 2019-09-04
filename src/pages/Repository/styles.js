@@ -16,7 +16,7 @@ export const Owner = styled.header`
   align-items: center;
 
   a {
-    color: #7159c1;
+    color: #ff9021;
     font-size: 16px;
     text-decoration: none;
   }
@@ -77,7 +77,7 @@ export const IssuesList = styled.ul`
           color: #333;
 
           &:hover {
-            color: #7159c1;
+            color: #ff9021;
           }
         }
 
@@ -112,7 +112,7 @@ export const FilterIssues = styled.select`
   border-radius: 5px;
   font-size: 15px;
   font-weight: bold;
-  background-color: #7159c1;
+  background-color: #ff9021;
   color: #FFF;
 `;
 
@@ -124,7 +124,7 @@ export const Pagination = styled.div`
   margin-top: 10px;
 
   button {
-    background-color: #7159c1;
+    background-color: #ff9021;
     padding: 5px;
     color: #FFF;
     border-radius: 3px;
