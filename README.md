@@ -5,6 +5,7 @@
 - Detalhes do repositório exibindo o avatar, nome, descrição e os problemas(Issues)
 - Filtro de Issues (Todos, Abertos e Fechados)
 - Paginação de Issues, 5 por página
+- Utilização da LocalStorage para armazenar repositórios
 
 #### Como instalar
 
