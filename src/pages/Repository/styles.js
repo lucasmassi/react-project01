@@ -115,3 +115,35 @@ export const FilterIssues = styled.select`
   background-color: #7159c1;
   color: #FFF;
 `;
+
+export const Pagination = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+
+  button {
+    background-color: #7159c1;
+    padding: 5px;
+    color: #FFF;
+    border-radius: 3px;
+    font-weight: bold;
+    align-items: center;
+    display: flex;
+    border: 0;
+
+    svg {
+      margin-right: 3px;
+      margin-left: 3px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+  }
+
+
+`;

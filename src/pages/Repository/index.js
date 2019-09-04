@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssuesList, FilterIssues } from './styles';
+import { Loading, Owner, IssuesList, FilterIssues, Pagination } from './styles';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -19,19 +20,21 @@ export default class Repository extends Component {
     repository: {},
     issues: [],
     loading: true,
-    filter: 'all'
+    filter: 'all',
+    page: 1
   }
 
   async componentDidMount() {
     const { match } = this.props;
     const repoName = decodeURIComponent(match.params.repository);
-    const { filter } = this.state;
+    const { filter, page } = this.state;
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
           state: filter,
+          page: page,
           per_page: 5,
         }
       })
@@ -46,16 +49,17 @@ export default class Repository extends Component {
 
   async componentDidUpdate(_, prevState) {
 
-    if (prevState.filter !== this.state.filter) {
+    if (prevState !== this.state) {
       const { match } = this.props;
       const repoName = decodeURIComponent(match.params.repository);
-      const { filter } = this.state;
+      const { filter, page } = this.state;
 
       const [repository, issues] = await Promise.all([
         api.get(`/repos/${repoName}`),
         api.get(`/repos/${repoName}/issues`, {
           params: {
             state: filter,
+            page: page,
             per_page: 5,
           }
         })
@@ -75,8 +79,24 @@ export default class Repository extends Component {
     })
   };
 
+  prevPage = e => {
+    if (this.state.page > 1) {
+      this.setState({
+        page: this.state.page - 1
+      })
+      this.componentDidUpdate();
+    }
+  }
+
+  nextPage = e => {
+    this.setState({
+      page: this.state.page + 1
+    })
+    this.componentDidUpdate();
+  }
+
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, page } = this.state;
 
     if (loading) {
       return <Loading>Carregando</Loading>
@@ -85,15 +105,15 @@ export default class Repository extends Component {
     return (
       <Container>
         <Owner>
-          <Link to="/">Voltar aos repositórios</Link>
+          <Link to="/"><FaArrowLeft></FaArrowLeft></Link>
           <img src={repository.owner.avatar_url} alt={repository.owner.login} />
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
         <FilterIssues onChange={this.handleSelectChange}>
           <option value="all">Todos</option>
-          <option value="open">Abertadas</option>
-          <option value="closed">Fechados</option>
+          <option value="open">Abertas</option>
+          <option value="closed">Fechadas</option>
         </FilterIssues>
         <IssuesList>
           {issues.map(issue => (
@@ -110,6 +130,10 @@ export default class Repository extends Component {
               </div>
             </li>
           ))}
+          <Pagination>
+            <button onClick={this.prevPage} disabled={page === 1} ><FaArrowLeft></FaArrowLeft> Prev </button>
+            <button onClick={this.nextPage} > Next <FaArrowRight></FaArrowRight></button>
+          </Pagination>
         </IssuesList>
       </Container>
     );

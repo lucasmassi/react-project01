@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { FaGithubAlt, FaPlus, FaSpinner, FaTimesCircle } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List, ErrorMessage, FilterIssues } from './styles';
+import { Form, SubmitButton, List, ErrorMessage } from './styles';
 
 export default class Main extends Component {
 
