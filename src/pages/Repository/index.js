@@ -112,8 +112,8 @@ export default class Repository extends Component {
         </Owner>
         <FilterIssues onChange={this.handleSelectChange}>
           <option value="all">Todos</option>
-          <option value="open">Abertas</option>
-          <option value="closed">Fechadas</option>
+          <option value="open">Abertos</option>
+          <option value="closed">Fechados</option>
         </FilterIssues>
         <IssuesList>
           {issues.map(issue => (
